@@ -1,6 +1,7 @@
 
 namespace sorting
 {
+    // Sort words by frequency
     std::multimap<int64_t, std::string_view> sortByCount(std::unordered_map<std::string_view, int64_t>& src)
     {
         std::multimap<int64_t, std::string_view> result;
@@ -12,6 +13,7 @@ namespace sorting
         return result;
     }
 
+    // Sort words by alphabetical order
     std::map<std::string_view, int64_t> sortByAlphabet(std::unordered_map<std::string_view, int64_t>& src)
     {
         std::map<std::string_view, int64_t> result;

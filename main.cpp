@@ -4,51 +4,7 @@
 #include "serialization.h"
 #include "local_buf.h"
 #include "sorting.h"
-
-// Transform string to lowercase
-inline void transformStringLower(char* str, const int32_t& str_sz)
-{
-    std::transform(str, str + str_sz, str, [](char c){ return std::tolower(c); });
-}
-
-// Split string into words and count frequency of words
-void splitString(const std::string_view& str, std::unordered_map<std::string_view, int64_t>& tokens, const int& min_word, const int& max_word)
-{
-    auto pos = str.begin();
-    auto lastPos = pos;
-    size_t length = str.length();
-
-    // Loop until end of string
-    while (lastPos < str.end())
-    {
-        // Find next non alphabetic character
-        pos = std::find_if_not(lastPos, str.end(), isalpha);
-
-        // End of string
-        if (pos == str.end())
-        {
-            pos = str.begin() + length;
-        }
-
-        // Insert into hashmap
-        if (pos != lastPos)
-        {
-            // Check length of word
-            int len = pos - lastPos;
-            if(len >= min_word && len <= max_word)
-            {
-                auto results = tokens.try_emplace(std::string_view(lastPos, len), 1);
-                if (!results.second)
-                {
-                    ++(results.first->second);
-                }
-            }
-        }
-
-        // Find next lowercase character
-        lastPos = std::find_if(pos, str.end(), islower);
-    }
-}
+#include "string_process.h"
 
 int main(int argc, char** argv)
 {
@@ -91,9 +47,9 @@ int main(int argc, char** argv)
     // Split string into individual words with counts
     std::unordered_map<std::string_view, int64_t> words;
 
-    // Transform string to lowercase
-    transformStringLower(local_buffer, local_buf_sz);
-    splitString(std::string_view{local_buffer}, words, min_word, max_word);
+    // Transform string to lowercase and split to individual words
+    string_process::transformStringLower(local_buffer, local_buf_sz);
+    string_process::splitString(std::string_view{local_buffer}, words, min_word, max_word);
 
     char* serial_buffer;
 
@@ -103,7 +59,7 @@ int main(int argc, char** argv)
         int64_t serial_buf_sz = serialization::calculateSerializeMapSize(words);
         serial_buffer = new char[serial_buf_sz];
         serialization::serializeMap(words, serial_buffer);
-        MPI_Ssend(serial_buffer, serial_buf_sz, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
+        MPI_Send(serial_buffer, serial_buf_sz, MPI_BYTE, 0, 0, MPI_COMM_WORLD);
     
         delete[] serial_buffer;
     }
