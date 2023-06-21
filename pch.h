@@ -1,0 +1,13 @@
+#include <iostream>
+#include <fstream>
+#include <time.h>
+#include <vector>
+#include <string_view>
+#include <algorithm>
+#include <iterator>
+#include <unordered_map>
+#include <map>
+#include <cstring>
+#include <mpi.h>
+#include <cctype>
+#include <type_traits>
