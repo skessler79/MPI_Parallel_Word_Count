@@ -35,7 +35,7 @@ namespace serialization
             std::memcpy(current_ptr, &key_size, sizeof(int));
             current_ptr += sizeof(int);
 
-            // Write key with null terminator
+            // Write key
             std::memcpy(current_ptr, key.data(), key_size);
             current_ptr += key_size;
 
