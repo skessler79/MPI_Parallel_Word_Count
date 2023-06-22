@@ -1,6 +1,6 @@
 CC = mpic++
 FILES = main.cpp
-CFLAGS = -std=c++20 -O3 -march=native -g -Wall -Wextra
+CFLAGS = -std=c++20 -O3 -march=native -g
 
 all:
 	${CC} ${FILES} ${CFLAGS}
